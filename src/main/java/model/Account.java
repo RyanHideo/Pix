@@ -17,6 +17,6 @@ public class Account {
     private BigDecimal balance;
 
     @Column(name = "status")
-    private Enum status;
+    private Status status;
 
 }
