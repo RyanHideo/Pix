@@ -1,7 +1,6 @@
 package model;
 
 import jakarta.persistence.*;
-import org.yaml.snakeyaml.events.Event;
 
 @Entity
 public class Client {
@@ -31,4 +30,16 @@ public class Client {
     private String city;
 
 
+    public Client() {
+    }
+
+    public Client(String name, String cpf, String email, String password, String phone, String address, String city) {
+        this.name = name;
+        this.cpf = cpf;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+        this.address = address;
+        this.city = city;
+    }
 }
