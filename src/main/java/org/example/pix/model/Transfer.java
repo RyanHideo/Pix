@@ -1,4 +1,4 @@
-package model;
+package org.example.pix.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
