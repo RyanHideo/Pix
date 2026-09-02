@@ -38,4 +38,11 @@ public class Account {
         this.statusAccount = statusAccount;
     }
 
+    public Client getClient() {
+        return client;
+    }
+
+    public StatusAccount getStatusAccount() {
+        return statusAccount;
+    }
 }
