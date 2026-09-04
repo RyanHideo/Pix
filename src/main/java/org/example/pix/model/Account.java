@@ -38,6 +38,10 @@ public class Account {
         this.statusAccount = statusAccount;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public Client getClient() {
         return client;
     }

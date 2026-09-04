@@ -1,9 +1,6 @@
 package org.example.pix.service;
 
-import org.example.pix.model.Account;
-import org.example.pix.model.PixKey;
-import org.example.pix.model.StatusAccount;
-import org.example.pix.model.StatusKeyPix;
+import org.example.pix.model.*;
 import org.example.pix.repository.PixKeyRepository;
 import org.example.pix.repository.TransferRepository;
 import org.springframework.stereotype.Service;
@@ -55,6 +52,19 @@ public class TransferService {
         }
     return account;
     }
+
+    public void validateDifferentAccounts(Account sender, Account receiver){
+        // Validação de segurança para evitar NullPointerException
+        if (sender == null || receiver == null || sender.getId() == null || receiver.getId() == null) {
+            throw new IllegalArgumentException("As contas e seus IDs não podem ser nulos");
+        }
+
+        // Compara os Longs de forma segura
+        if (sender.getId().equals(receiver.getId())){
+            throw new IllegalArgumentException("As contas devem ser diferentes");
+        }
+    }
+
 
 
 }
