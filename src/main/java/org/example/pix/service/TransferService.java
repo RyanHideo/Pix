@@ -3,6 +3,7 @@ package org.example.pix.service;
 import org.example.pix.model.*;
 import org.example.pix.repository.PixKeyRepository;
 import org.example.pix.repository.TransferRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -65,6 +66,9 @@ public class TransferService {
         }
     }
 
-
-
+    public void validateBalance(Account sender, BigDecimal value){
+        if (sender.getBalance().compareTo(value) < 0){
+            throw new IllegalArgumentException("Saldo insuficiente");
+        }
+    }
 }

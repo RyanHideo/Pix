@@ -42,6 +42,10 @@ public class Account {
         return id;
     }
 
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
     public Client getClient() {
         return client;
     }
