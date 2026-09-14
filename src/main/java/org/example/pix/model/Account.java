@@ -53,4 +53,29 @@ public class Account {
     public StatusAccount getStatusAccount() {
         return statusAccount;
     }
+
+    public void debitBalance(BigDecimal value){
+
+        if (value == null){
+            throw new IllegalArgumentException("O valor deve ser maior que 0");
+        }
+
+        if (this.balance.compareTo(value) < 0){
+            throw new IllegalArgumentException("Não há saldo suficiente na conta");
+        }
+
+        if (value.compareTo(BigDecimal.ZERO) <= 0){
+            throw new IllegalArgumentException("Nao pode ser debitado um valor negativo");
+        }
+
+        this.balance = this.balance.subtract(value);
+    }
+
+    public void creditBalance(BigDecimal value){
+
+        if (value.signum() <=0){
+            throw new IllegalArgumentException("O valor deve ser maior que 0");
+        }
+        this.balance = this.balance.add(value);
+    }
 }
