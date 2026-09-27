@@ -17,7 +17,7 @@ public class Account {
     @Column(name = "agency")
     private String agency;
 
-    @Column(name = "number_account",nullable = false)
+    @Column(name = "number_account",nullable = false, unique = true)
     private String numberAccount;
 
     @Column(name = "balance", nullable = false)
@@ -60,12 +60,12 @@ public class Account {
             throw new IllegalArgumentException("O valor deve ser maior que 0");
         }
 
-        if (this.balance.compareTo(value) < 0){
-            throw new IllegalArgumentException("Não há saldo suficiente na conta");
+        if (value.compareTo(BigDecimal.ZERO) < 0){
+            throw new IllegalArgumentException("Nao pode ser debitado um valor negativo");
         }
 
-        if (value.compareTo(BigDecimal.ZERO) <= 0){
-            throw new IllegalArgumentException("Nao pode ser debitado um valor negativo");
+        if (this.balance.compareTo(value) < 0){
+            throw new IllegalArgumentException("Não há saldo suficiente na conta");
         }
 
         this.balance = this.balance.subtract(value);
@@ -73,9 +73,14 @@ public class Account {
 
     public void creditBalance(BigDecimal value){
 
+        if(value == null){
+            throw new IllegalArgumentException("O valor creditado não pode ser nulo");
+        }
         if (value.signum() <=0){
             throw new IllegalArgumentException("O valor deve ser maior que 0");
         }
         this.balance = this.balance.add(value);
     }
+
+
 }
