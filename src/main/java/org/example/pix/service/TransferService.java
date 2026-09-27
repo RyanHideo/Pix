@@ -1,5 +1,6 @@
 package org.example.pix.service;
 
+import jakarta.transaction.Transactional;
 import org.example.pix.model.*;
 import org.example.pix.repository.PixKeyRepository;
 import org.example.pix.repository.TransferRepository;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.AbstractCollection;
 
 @Service
 public class TransferService {
@@ -70,5 +72,22 @@ public class TransferService {
         if (sender.getBalance().compareTo(value) < 0){
             throw new IllegalArgumentException("Saldo insuficiente");
         }
+    }
+
+    @Transactional
+    public Transfer makeTransfer(Account sender, String pix, BigDecimal value){
+        validateValue(value);
+        Account senderValidada = validateAccount(sender);
+        PixKey chaveValidada = validatePixKey(pix);
+        Account receiver = chaveValidada.getAccount();
+        receiver = validateAccount(receiver);
+        validateDifferentAccounts(senderValidada, receiver);
+        validateBalance(senderValidada,value);
+        senderValidada.debitBalance(value);
+        receiver.creditBalance(value);
+        Transfer transfer = new Transfer(senderValidada, pix, receiver, value);
+        Transfer saveOperation = transferRepository.save(transfer);
+
+        return saveOperation;
     }
 }
