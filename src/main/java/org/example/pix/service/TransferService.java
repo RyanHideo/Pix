@@ -2,26 +2,27 @@ package org.example.pix.service;
 
 import jakarta.transaction.Transactional;
 import org.example.pix.model.*;
+import org.example.pix.repository.AccountRepository;
 import org.example.pix.repository.PixKeyRepository;
 import org.example.pix.repository.TransferRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.AbstractCollection;
 
 @Service
 public class TransferService {
 
     private final PixKeyRepository pixKeyRepository;
     private final TransferRepository transferRepository;
+    private final AccountRepository accountRepository;
 
-    public TransferService(PixKeyRepository pixKeyRepository, TransferRepository transferRepository) {
+    public TransferService(PixKeyRepository pixKeyRepository, TransferRepository transferRepository, AccountRepository accountRepository) {
         this.pixKeyRepository = pixKeyRepository;
         this.transferRepository = transferRepository;
+        this.accountRepository = accountRepository;
     }
 
-    public void validateValue(BigDecimal value){
+    private void validateValue(BigDecimal value){
 
         if (value == null){
              throw new IllegalArgumentException("Insira um valor");
@@ -31,7 +32,7 @@ public class TransferService {
         }
     }
 
-    public PixKey validatePixKey(String pixKey) {
+    private PixKey validatePixKey(String pixKey) {
         var keyData = pixKeyRepository.findByPixKey(pixKey)
                 .orElseThrow(() -> new IllegalArgumentException("Chave Pix não encontrada."));
 
@@ -42,7 +43,7 @@ public class TransferService {
         return keyData;
     }
 
-    public Account validateAccount(Account account){
+    private Account validateAccount(Account account){
 
         //Verificar se account esta nulo
         if (account == null){
@@ -56,7 +57,7 @@ public class TransferService {
     return account;
     }
 
-    public void validateDifferentAccounts(Account sender, Account receiver){
+    private void validateDifferentAccounts(Account sender, Account receiver){
         // Validação de segurança para evitar NullPointerException
         if (sender == null || receiver == null || sender.getId() == null || receiver.getId() == null) {
             throw new IllegalArgumentException("As contas e seus IDs não podem ser nulos");
@@ -68,26 +69,41 @@ public class TransferService {
         }
     }
 
-    public void validateBalance(Account sender, BigDecimal value){
+    private void validateBalance(Account sender, BigDecimal value){
         if (sender.getBalance().compareTo(value) < 0){
             throw new IllegalArgumentException("Saldo insuficiente");
         }
     }
 
     @Transactional
-    public Transfer makeTransfer(Account sender, String pix, BigDecimal value){
+    public Transfer makeTransfer(Long senderId, String pix, BigDecimal value){
         validateValue(value);
-        Account senderValidada = validateAccount(sender);
-        PixKey chaveValidada = validatePixKey(pix);
-        Account receiver = chaveValidada.getAccount();
-        receiver = validateAccount(receiver);
-        validateDifferentAccounts(senderValidada, receiver);
-        validateBalance(senderValidada,value);
-        senderValidada.debitBalance(value);
-        receiver.creditBalance(value);
-        Transfer transfer = new Transfer(senderValidada, pix, receiver, value);
-        Transfer saveOperation = transferRepository.save(transfer);
 
-        return saveOperation;
+        var sender = accountRepository.findById(senderId)
+                        .orElseThrow(() -> new IllegalArgumentException(
+                                "Conta remetente não encontrada"
+                        ));
+
+        Account senderValidada = validateAccount(sender);
+
+        PixKey chaveValidada = validatePixKey(pix);
+
+        Account receiver = chaveValidada.getAccount();
+
+        receiver = validateAccount(receiver);
+
+        validateDifferentAccounts(senderValidada, receiver);
+
+        validateBalance(senderValidada,value);
+
+        senderValidada.debitBalance(value);
+
+        receiver.creditBalance(value);
+
+        Transfer transfer = new Transfer(senderValidada, pix, receiver, value);
+
+        Transfer savedTransfer = transferRepository.save(transfer);
+
+        return savedTransfer;
     }
 }
