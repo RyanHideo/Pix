@@ -1,5 +1,6 @@
 package org.example.pix.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -9,15 +10,15 @@ import java.math.BigDecimal;
 public class TransferRequestDTO{
 
     @NotNull
-    @NotEmpty
+    @Positive
     private Long senderID;
 
     @NotNull
     @NotEmpty
+    @NotBlank
     private String pixKey;
 
     @NotNull
-    @NotEmpty
     @Positive
     private BigDecimal value;
 
