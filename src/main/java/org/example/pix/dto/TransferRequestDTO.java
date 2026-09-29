@@ -11,9 +11,8 @@ public class TransferRequestDTO{
 
     @NotNull
     @Positive
-    private Long senderID;
+    private Long senderId;
 
-    @NotNull
     @NotEmpty
     @NotBlank
     private String pixKey;
@@ -25,18 +24,18 @@ public class TransferRequestDTO{
     public TransferRequestDTO() {
     }
 
-    public TransferRequestDTO(Long senderID, String pixKey, BigDecimal value) {
-        this.senderID = senderID;
+    public TransferRequestDTO(Long senderId, String pixKey, BigDecimal value) {
+        this.senderId = senderId;
         this.pixKey = pixKey;
         this.value = value;
     }
 
-    public Long getSenderID() {
-        return senderID;
+    public Long getSenderId() {
+        return senderId;
     }
 
-    public void setSenderID(Long senderID) {
-        this.senderID = senderID;
+    public void setSenderId(Long senderId) {
+        this.senderId = senderId;
     }
 
     public String getPixKey() {
