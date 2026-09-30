@@ -32,6 +32,4 @@ build/
 ### VS Code ###
 .vscode/
 
-# Ocultar apenas as credenciais locais
-**/application-local.properties
 

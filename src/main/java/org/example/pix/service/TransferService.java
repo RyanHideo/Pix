@@ -33,7 +33,7 @@ public class TransferService {
     }
 
     private PixKey validatePixKey(String pixKey) {
-        var keyData = pixKeyRepository.findByPixKey(pixKey)
+        var keyData = pixKeyRepository.findByKeyPix(pixKey)
                 .orElseThrow(() -> new IllegalArgumentException("Chave Pix não encontrada."));
 
 

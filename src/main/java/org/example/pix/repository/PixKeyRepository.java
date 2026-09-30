@@ -10,5 +10,5 @@ import java.util.Optional;
 
 @Repository
 public interface PixKeyRepository extends JpaRepository<PixKey, Long> {
-    Optional<PixKey> findByPixKey(String pixKey);
+    Optional<PixKey> findByKeyPix(String keyPix);
 }
